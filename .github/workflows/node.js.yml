@@ -8,29 +8,15 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
-    - uses: actions/checkout@v4
-    # - name: Use Node.js ${{ matrix.node-version }}
-    #   uses: actions/setup-node@v4
-    #   with:
-    #     node-version: ${{ matrix.node-version }}
-    #     cache: 'npm'
-    - run: npm install -g @cyclonedx/cdxgen
-    - run: cdxgen -o bom.json
-    
-    - name: Upload SBOM
-      uses: actions/upload-artifact@v4
-      with:
-        name: sbom
-        path: bom.json
+      - uses: actions/checkout@v4
+      - run: apt install nodejs
+      - run: npm install -g @cyclonedx/cdxgen
+      - run: cdxgen -o bom.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cyclonedx-sbom
+          path: bom.json
